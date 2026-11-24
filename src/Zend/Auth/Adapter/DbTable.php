@@ -39,7 +39,7 @@ class Zend_Auth_Adapter_DbTable implements Zend_Auth_Adapter_Interface
     protected $_zendDb;
 
     /**
-     * @var Zend_Db_Select
+     * @var Zend_Db_Select|null
      */
     protected $_dbSelect = null;
 
