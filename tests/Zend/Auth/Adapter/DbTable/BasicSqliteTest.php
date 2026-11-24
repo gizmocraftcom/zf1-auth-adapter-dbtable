@@ -20,6 +20,8 @@
  * @version    $Id$
  */
 
+use PHPUnit\Framework\Attributes\DoesNotPerformAssertions;
+use PHPUnit\Framework\Attributes\Group;
 
 /**
  * @category   Zend
@@ -27,9 +29,9 @@
  * @subpackage UnitTests
  * @copyright  Copyright (c) 2005-2015 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @group      Zend_Auth
- * @group      Zend_Db_Table
  */
+#[Group('Zend_Auth')]
+#[Group('Zend_Db_Table')]
 class Zend_Auth_Adapter_DbTable_BasicSqliteTest extends PHPUnit\Framework\TestCase
 {
     /**
@@ -72,7 +74,9 @@ class Zend_Auth_Adapter_DbTable_BasicSqliteTest extends PHPUnit\Framework\TestCa
     public function tearDown(): void
     {
         $this->_adapter = null;
-        $this->_db->query('DROP TABLE [users]');
+        if ($this->_db !== null) {
+            $this->_db->query('DROP TABLE [users]');
+        }
         $this->_db = null;
     }
 
@@ -200,17 +204,13 @@ class Zend_Auth_Adapter_DbTable_BasicSqliteTest extends PHPUnit\Framework\TestCa
         }
     }
 
-    /**
-     * @group ZF-5957
-     */
+    #[Group('ZF-5957')]
     public function testAdapterCanReturnDbSelectObject()
     {
         $this->assertTrue($this->_adapter->getDbSelect() instanceof Zend_Db_Select);
     }
 
-    /**
-     * @group ZF-5957
-     */
+    #[Group('ZF-5957')]
     public function testAdapterCanUseModifiedDbSelectObject()
     {
         $this->_db->getProfiler()->setEnabled(true);
@@ -226,9 +226,7 @@ class Zend_Auth_Adapter_DbTable_BasicSqliteTest extends PHPUnit\Framework\TestCa
         );
     }
 
-    /**
-     * @group ZF-5957
-     */
+    #[Group('ZF-5957')]
     public function testAdapterReturnsASelectObjectWithoutAuthTimeModificationsAfterAuth()
     {
         $select = $this->_adapter->getDbSelect();
@@ -321,10 +319,8 @@ class Zend_Auth_Adapter_DbTable_BasicSqliteTest extends PHPUnit\Framework\TestCa
         // $this->assertEquals($e->getMessage(), 'The supplied parameters to Zend_Auth_Adapter_DbTable failed to produce a valid sql statement, please check table and column names for validity.');
     }
 
-    /**
-     * @doesNotPerformAssertions
-     * @group ZF-3068
-     */
+    #[DoesNotPerformAssertions]
+    #[Group('ZF-3068')]
     public function testDbTableAdapterUsesCaseFolding()
     {
         $this->tearDown();
@@ -340,9 +336,8 @@ class Zend_Auth_Adapter_DbTable_BasicSqliteTest extends PHPUnit\Framework\TestCa
 
     /**
      * Test fallback to default database adapter, when no such adapter set
-     *
-     * @group ZF-7510
      */
+    #[Group('ZF-7510')]
     public function testAuthenticateWithDefaultDbAdapterNoAdapterException()
     {
         $this->expectException(\Zend_Auth_Adapter_Exception::class);
@@ -365,9 +360,8 @@ class Zend_Auth_Adapter_DbTable_BasicSqliteTest extends PHPUnit\Framework\TestCa
 
     /**
      * Test fallback to default database adapter
-     *
-     * @group ZF-7510
      */
+    #[Group('ZF-7510')]
     public function testAuthenticateWithDefaultDbAdapter()
     {
         // preserve default adapter between cases
@@ -395,9 +389,8 @@ class Zend_Auth_Adapter_DbTable_BasicSqliteTest extends PHPUnit\Framework\TestCa
      * Test to see same usernames with different passwords can not authenticate
      * when flag is not set. This is the current state of
      * Zend_Auth_Adapter_DbTable (up to ZF 1.10.6)
-     *
-     * @group   ZF-7289
      */
+    #[Group('ZF-7289')]
     public function testEqualUsernamesDifferentPasswordShouldNotAuthenticateWhenFlagIsNotSet()
     {
         $this->_db->insert('users', array(
@@ -419,9 +412,8 @@ class Zend_Auth_Adapter_DbTable_BasicSqliteTest extends PHPUnit\Framework\TestCa
     /**
      * Test to see same usernames with different passwords can authenticate when
      * a flag is set
-     *
-     * @group   ZF-7289
      */
+    #[Group('ZF-7289')]
     public function testEqualUsernamesDifferentPasswordShouldAuthenticateWhenFlagIsSet()
     {
         $this->_db->insert('users', array(
